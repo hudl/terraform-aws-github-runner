@@ -73,7 +73,7 @@ resource "aws_iam_role_policy" "scale_up" {
   role = aws_iam_role.scale_up.name
 
   policy = templatefile("${path.module}/policies/lambda-scale-up.json", {
-    arn_runner_instance_role = aws_iam_role.runner.arn
+    arn_runner_instance_role = aws_iam_role.runner[0].arn
     sqs_arn                  = var.sqs_build_queue.arn
   })
 }

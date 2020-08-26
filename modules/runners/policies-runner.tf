@@ -3,6 +3,8 @@ data "aws_caller_identity" "current" {}
 resource "aws_iam_role" "runner" {
   name                 = "${var.environment}-github-action-runners-runner-role"
   assume_role_policy   = templatefile("${path.module}/policies/instance-role-trust-policy.json", {})
+  path                 = local.role_path
+  permissions_boundary = var.role_permissions_boundary
   tags                 = local.tags
 }
 

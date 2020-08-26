@@ -15,6 +15,7 @@ data "aws_iam_role" "custom_runner" {
 }
 
 resource "aws_iam_instance_profile" "runner" {
+  count = "${var.instance_role}" == null ? 1 : 0
   name = "${var.environment}-github-action-runners-profile"
   role = var.instance_role == null ? aws_iam_role.runner[count.index].name : data.aws_iam_role.custom_runner[count.index].name
   path = local.instance_profile_path
@@ -27,6 +28,7 @@ resource "aws_iam_role_policy_attachment" "runner_session_manager_aws_managed" {
 }
 
 resource "aws_iam_role_policy" "ssm_parameters" {
+  count = "${var.instance_role}" == null ? 1 : 0
   name   = "runner-ssm-parameters"
   role   = "${var.instance_role}" == null ? aws_iam_role.runner[count.index].name : data.aws_iam_role.custom_runner[count.index].name
   policy = templatefile("${path.module}/policies/instance-ssm-parameters-policy.json",
@@ -37,6 +39,7 @@ resource "aws_iam_role_policy" "ssm_parameters" {
 }
 
 resource "aws_iam_role_policy" "dist_bucket" {
+  count = "${var.instance_role}" == null ? 1 : 0
   name   = "distribution-bucket"
   role   = "${var.instance_role}" == null ? aws_iam_role.runner[count.index].name : data.aws_iam_role.custom_runner[count.index].name
   policy = templatefile("${path.module}/policies/instance-s3-policy.json",

@@ -18,6 +18,11 @@ variable "subnet_ids" {
   type        = list(string)
 }
 
+variable "ami_owners" {
+  description = "List of valid owners to search for AMIs in."
+  type        = list(string)
+}
+
 variable "ami_filter" {
   description = "List of maps used to create the AMI filter for the action runner AMI."
   type        = map(list(string))

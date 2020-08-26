@@ -63,9 +63,11 @@ module "runners" {
   s3_location_runner_binaries = local.s3_action_runner_url
 
   instance_type = var.instance_type
+    
+  instance_role = var.instance_role
 
   runner_architecture = local.runner_architecture
-  ami_filter          = local.runner_architecture == "arm64" ? { name = ["amzn2-ami-hvm-2*-arm64-gp2"] } : { name = ["amzn2-ami-hvm-2.*-x86_64-ebs"] }
+  ami_filter          = var.ami_filter != null ? var.ami_filter : local.runner_architecture == "arm64" ? { name = ["amzn2-ami-hvm-2*-arm64-gp2"] } : { name = ["amzn2-ami-hvm-2.*-x86_64-ebs"] }
 
   sqs_build_queue                 = aws_sqs_queue.queued_builds
   github_app                      = var.github_app
@@ -109,13 +111,4 @@ module "runner_binaries" {
 
   role_path                 = var.role_path
   role_permissions_boundary = var.role_permissions_boundary
-}
-
-resource "aws_resourcegroups_group" "resourcegroups_group" {
-  name = "${var.environment}-group"
-  resource_query {
-    query = templatefile("${path.module}/templates/resource-group.json", {
-      environment = var.environment
-    })
-  }
 }

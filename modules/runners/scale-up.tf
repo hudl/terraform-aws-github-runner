@@ -81,9 +81,10 @@ resource "aws_iam_role_policy" "scale_up" {
 }
 
 resource "aws_iam_role_policy" "scale_up_logging" {
+  count = "${var.instance_role}" == null ? 1 : 0
   name = "${var.environment}-lambda-logging"
   role = aws_iam_role.scale_up.name
   policy = templatefile("${path.module}/policies/lambda-cloudwatch.json", {
-    log_group_arn = aws_cloudwatch_log_group.scale_up.arn
+    log_group_arn = aws_cloudwatch_log_group.scale_up[count.index].arn
   })
 }

@@ -49,7 +49,8 @@ resource "aws_launch_template" "runner" {
   }
 
   iam_instance_profile {
-    name = aws_iam_instance_profile.runner.name
+    count = "${var.instance_role}" == null ? 1 : 0
+    name = aws_iam_instance_profile.runner[count.index].name
   }
 
   instance_initiated_shutdown_behavior = "terminate"

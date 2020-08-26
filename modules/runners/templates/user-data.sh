@@ -3,17 +3,10 @@ exec > >(tee /var/log/user-data.log | logger -t user-data -s 2>/dev/console) 2>&
 
 ${pre_install}
 
-yum update -y
-
-# Install docker
-amazon-linux-extras install docker
-service docker start
-usermod -a -G docker ec2-user
-
-yum install -y curl jq git
-
 # Install runner
-cd /home/ec2-user
+me=$(whoami)
+
+cd /opt
 mkdir actions-runner && cd actions-runner
 
 aws s3 cp ${s3_location_runner_distribution} actions-runner.tar.gz
@@ -84,11 +77,11 @@ CONFIG=$(aws ssm get-parameters --names ${environment}-$INSTANCE_ID --with-decry
 aws ssm delete-parameter --name ${environment}-$INSTANCE_ID --region $REGION
 
 export RUNNER_ALLOW_RUNASROOT=1
-./config.sh --unattended --name $INSTANCE_ID --work "_work" $CONFIG
+sudo ./config.sh --unattended --name $INSTANCE_ID --work "_work" $CONFIG
 
-chown -R ec2-user:ec2-user .
-./svc.sh install ${service_user}
+sudo chown -R $me:$me .
+sudo ./svc.sh install $me
 
 ${post_install}
 
-./svc.sh start
+sudo ./svc.sh start

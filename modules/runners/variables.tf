@@ -63,6 +63,12 @@ variable "instance_type" {
   default     = "m5.large"
 }
 
+variable "instance_role" {
+  description = "Optional IAM Role to use on the new instance."
+  type        = string
+  default     = null
+}
+
 variable "ami_filter" {
   description = "List of maps used to create the AMI filter for the action runner AMI."
   type        = map(list(string))

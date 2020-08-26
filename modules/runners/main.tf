@@ -32,6 +32,7 @@ data "aws_ami" "runner" {
 
 resource "aws_launch_template" "runner" {
   name = "${var.environment}-action-runner"
+  count = "${var.instance_role}" == null ? 1 : 0
 
   dynamic "block_device_mappings" {
     for_each = [var.block_device_mappings]
@@ -49,7 +50,6 @@ resource "aws_launch_template" "runner" {
   }
 
   iam_instance_profile {
-    count = "${var.instance_role}" == null ? 1 : 0
     name = aws_iam_instance_profile.runner[count.index].name
   }
 

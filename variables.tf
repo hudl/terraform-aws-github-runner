@@ -8,9 +8,23 @@ variable "vpc_id" {
   type        = string
 }
 
+variable "instance_role" {
+  description = "The IAM Role to assign to the new instance."
+  type        = string
+}
+
 variable "subnet_ids" {
   description = "List of subnets in which the action runners will be launched, the subnets needs to be subnets in the `vpc_id`."
   type        = list(string)
+}
+
+variable "ami_filter" {
+  description = "List of maps used to create the AMI filter for the action runner AMI."
+  type        = map(list(string))
+
+  default = {
+    name = ["i-github-runner"]
+  }
 }
 
 variable "tags" {

@@ -52,7 +52,7 @@ resource "aws_cloudwatch_log_group" "scale_up" {
 resource "aws_lambda_event_source_mapping" "scale_up" {
   count            = "${var.instance_role}" == null ? 1 : 0
   event_source_arn = var.sqs_build_queue.arn
-  function_name    = aws_lambda_function.scale_up.[count.index]arn
+  function_name    = aws_lambda_function.scale_up[count.index].arn
 }
 
 resource "aws_lambda_permission" "scale_runners_lambda" {

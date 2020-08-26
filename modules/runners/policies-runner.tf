@@ -4,6 +4,8 @@ resource "aws_iam_role" "runner" {
   count = var.instance_role == null ? 1 : 0
   name                 = "${var.environment}-github-action-runners-runner-role"
   assume_role_policy   = templatefile("${path.module}/policies/instance-role-trust-policy.json", {})
+  path                 = local.role_path
+  permissions_boundary = var.role_permissions_boundary
   tags                 = local.tags
 }
 
